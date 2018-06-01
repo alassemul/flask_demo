@@ -19,11 +19,17 @@ class User(db.Model):
     password = db.Column(db.String(16))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
+    def __repr__(self) -> str:
+        return '<User: %s %s %s>' % (self.user_name, self.password, self.role_id)
+
 
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
     role_name = db.Column(db.String(16), unique=True)
+
+    def __repr__(self) -> str:
+        return '<Role: %s %s>' % (self.id, self.role_name)
 
 
 class RegForm(FlaskForm):
@@ -46,6 +52,7 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         if form.validate_on_submit():
+
             return render_template("main.html")
     return render_template("login.html", form=form)
 
