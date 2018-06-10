@@ -1,7 +1,5 @@
 from flask import Flask, render_template, request, flash, redirect
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField,IntegerField, SelectField, DateField
-from wtforms.validators import DataRequired, EqualTo
+from form import RegForm, LoginForm, ArticleForm
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -57,48 +55,6 @@ class Article(db.Model):
                                               self.fiber_type, self.fiber_length)
 
 
-class RegForm(FlaskForm):
-    username = StringField('用户名', validators=[DataRequired()])
-    password = PasswordField('密码', validators=[DataRequired()])
-    password2 = PasswordField('确认密码', validators=[DataRequired(), EqualTo('password', message='密码不一致')])
-    submit = SubmitField('注册')
-
-
-class LoginForm(FlaskForm):
-    username = StringField('用户名', validators=[DataRequired()])
-    password = PasswordField('密码', validators=[DataRequired()])
-    submit = SubmitField('登陆')
-
-
-class ArticleForm(FlaskForm):
-    create_time = DateField('时间', validators=[DataRequired()])
-    project_type = StringField('分类（抢修/迁改/整改）', validators=[DataRequired()])
-    project_name = StringField('维护项目名称', validators=[DataRequired()])
-    reason = StringField('抢修故障/迁改/整改原因')
-    fiber_type = SelectField('使用光缆类型', validators=[DataRequired()], choices=[('0', '12芯光缆'),
-                                                                             ('1', '24芯光缆'),
-                                                                             ('2', '48芯光缆'),
-                                                                             ('3', '96芯光缆'),
-                                                                             ('4', '144芯光缆')])
-    fiber_length = IntegerField('光缆长度（米）', validators=[DataRequired()])
-    closure_type = SelectField('使用接头盒类型', validators=[DataRequired()], choices=[('0', '12芯光缆'),
-                                                                               ('1', '24芯光缆'),
-                                                                               ('2', '48芯光缆'),
-                                                                               ('3', '96芯光缆'),
-                                                                               ('4', '144芯光缆')])
-
-    closure_number = IntegerField('接头盒个数', validators=[DataRequired()])
-    other_things = StringField('其他材料用量')
-    recycle_fiber_type = SelectField('撤旧光缆类型', choices=[('0', '12芯光缆'),
-                                                        ('1', '24芯光缆'),
-                                                        ('2', '48芯光缆'),
-                                                        ('3', '96芯光缆'),
-                                                        ('4', '144芯光缆')])
-    recycle_fiber_length = IntegerField('撤旧光缆长度（米）')
-
-    submit = SubmitField('提交')
-
-
 @app.route('/', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -132,6 +88,17 @@ def reg():
 
     return render_template("reg.html", form=form)
 
+
+@app.route('/newarti', methods=['GET', 'POST'])
+def newarti():
+    form = ArticleForm()
+    if request.method == 'POST':
+        print(request.form.get('recycle_fiber_type'))
+
+    return render_template("createArti.html", form=form)
+
+
+print(__name__)
 
 if __name__ == '__main__':
     app.run()

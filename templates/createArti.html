@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form method="post">
+    {{ form.csrf_token() }}
+   hello!!<br>
+
+<hr>
+<ul>
+
+    {{ form.create_time.label }}{{ form.create_time }}<br><br>
+    {{ form.project_type.label }}{{ form.project_type }}<br><br>
+    {{ form.project_name.label }}{{ form.project_name }}<br><br>
+    {{ form.fiber_type.label }}{{ form.fiber_type }}{{ form.fiber_length.label }}{{ form.fiber_length }}<br><br>
+    {{ form.closure_type.label }}{{ form.closure_type }}{{ form.closure_number.label }}{{ form.closure_number }}<br><br>
+    {{ form.recycle_fiber_type.label }}{{ form.recycle_fiber_type }}<br><br>
+    {{ form.recycle_fiber_length.label }}{{ form.recycle_fiber_length }}<br><br>
+    {{ form.other_things.label }}{{ form.other_things }}<br><br>
+    {{ form.submit}}<br>
+
+</ul>
+
+{% for message in get_flashed_messages() %}
+    {{ message }}
+{% endfor %}
+</form>
+</body>
+</html>
