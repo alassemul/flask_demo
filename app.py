@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, flash, redirect
 from form import RegForm, LoginForm, ArticleForm
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin, LoginManager, login_user, logout_user, current_user, login_required
 
 
 app = Flask(__name__)
@@ -8,6 +9,13 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://alass:open0930@127.0.0.1:3306/f
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'alass'
 db = SQLAlchemy(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 
 class Role(db.Model):
@@ -20,10 +28,10 @@ class Role(db.Model):
         return '<Role: %s %s>' % (self.id, self.role_name)
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    user_name = db.Column(db.String(16))
+    name = db.Column(db.String(16))
     password = db.Column(db.String(16))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     dep = db.Column(db.String(16))
@@ -40,13 +48,13 @@ class Article(db.Model):
     project_type = db.Column(db.String(16))
     project_name = db.Column(db.String(96))
     reason = db.Column(db.String(256))
-    fiber_type = db.Column(db.Integer, nullable=False)
-    fiber_length = db.Column(db.Integer)
-    closure_type = db.Column(db.Integer)
+    fiber_type = db.Column(db.String(16), nullable=False)
+    fiber_length = db.Column(db.Float)
+    closure_type = db.Column(db.String(16))
     closure_number = db.Column(db.Integer)
     other_things = db.Column(db.String(16))
     recycle_fiber_type = db.Column(db.String(16))
-    recycle_fiber_length = db.Column(db.Integer)
+    recycle_fiber_length = db.Column(db.Float)
     create_user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     approver_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
@@ -59,11 +67,18 @@ class Article(db.Model):
 def login():
     form = LoginForm()
     if request.method == 'POST':
+
         username = request.form.get('username')
         password = request.form.get('password')
         if form.validate_on_submit():
+            user = User.query.filter_by(name=username).first()
 
-            return render_template("main.html")
+            if user.password == password:
+                login_user(user)
+                print(current_user.name)
+                return redirect('/newarti')
+            else:
+                flash('用户名或密码不正确')
     return render_template("login.html", form=form)
 
 
@@ -71,15 +86,14 @@ def login():
 def reg():
     form = RegForm()
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        password2 = request.form.get('password2')
+        user = User()
+        user.name = request.form.get('username')
+        user.password = request.form.get('password')
+        user.dep = request.form.get('dep')
+        user.phone_num = request.form.get('phone_num')
         if form.validate_on_submit():
-            a = User()  # type: User
-            a.user_name = username
-            a.password = password
-            a.role_id = 2
-            db.session.add(a)
+            user.role_id = 5
+            db.session.add(user)
             db.session.commit()
             flash('注册成功')
             return redirect('/')
@@ -90,10 +104,28 @@ def reg():
 
 
 @app.route('/newarti', methods=['GET', 'POST'])
+@login_required
 def newarti():
     form = ArticleForm()
     if request.method == 'POST':
-        print(request.form.get('recycle_fiber_type'))
+        if form.validate_on_submit():
+            ar = Article()
+            ar.create_time = request.form.get('create_time')
+            ar.project_type = request.form.get('project_type')
+            ar.project_name = request.form.get('project_name')
+            ar.fiber_type = request.form.get('fiber_type')
+            ar.fiber_length = request.form.get('fiber_length')
+            ar.closure_type = request.form.get('closure_type')
+            ar.closure_number = request.form.get('closure_number')
+            ar.other_things = request.form.get('other_things')
+            ar.reason = request.form.get('reason')
+            ar.recycle_fiber_type = request.form.get('recycle_fiber_type')
+            ar.recycle_fiber_length = request.form.get('recycle_fiber_length')
+            ar.create_user_id = current_user.id
+            ar.approver_id = current_user.id
+            db.session.add(ar)
+            db.session.commit()
+            return redirect('/newarti')
 
     return render_template("createArti.html", form=form)
 

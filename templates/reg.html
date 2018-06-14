@@ -2,14 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>注册</title>
 </head>
 <body>
 <form method="post">
-    {{ form.csrf_token() }}
+    <ul>
+        欢迎注册！
+    </ul>
+    <hr>
+    <ul>
+       {{ form.csrf_token() }}
     {{ form.username.label }}{{ form.username }} <br>
     {{ form.password.label }}{{ form.password }}<br>
     {{ form.password2.label }}{{ form.password2 }}<br>
+    {{ form.dep.label }}{{ form.dep }}<br>
+    {{ form.phone_num.label }}{{ form.phone_num }}<br>
+   </ul>
+
+    <hr>
     {{ form.submit}}<br>
 {% for message in get_flashed_messages() %}
     {{ message }}
