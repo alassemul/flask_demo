@@ -2,15 +2,18 @@ from flask import Flask, render_template, request, flash, redirect
 from form import RegForm, LoginForm, ArticleForm
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, logout_user, current_user, login_required
+from flask_bootstrap import Bootstrap
 
 
 app = Flask(__name__)
+bootstrap = Bootstrap(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://alass:open0930@127.0.0.1:3306/fibersupport'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'alass'
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
+
 
 
 @login_manager.user_loader
@@ -127,10 +130,14 @@ def newarti():
             db.session.commit()
             return redirect('/newarti')
 
-    return render_template("createArti.html", form=form)
+    articles = Article.query.filter_by(create_user_id=current_user.id)
+    return render_template("createArti.html", form=form, articles=articles)
 
 
-print(__name__)
+@app.route('/base', methods=['GET', 'POST'])
+def base():
+    return render_template("base.html")
+
 
 if __name__ == '__main__':
     app.run()

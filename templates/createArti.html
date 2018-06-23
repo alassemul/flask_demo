@@ -31,9 +31,39 @@
 
     <hr>
 <ul>
-    {% for foo in form %}
-    
-    {% endfor %}
+已提交工单:<br>
+<table border="0">
+<tr>
+    <th>时间</th>
+    <th>分类</th>
+    <th>项目名称</th>
+    <th>使用光缆类型</th>
+    <th>使用光缆长度</th>
+</tr>
+{% for article in articles %}
+    <tr>
+        <th>{{ article.create_time }}</th>
+        <th>
+            {% if article.project_type=='0' %}
+               抢修
+            {% endif %}
+            {% if article.project_type=='1'%}
+               迁改
+            {% endif %}
+             {% if article.project_type=='2' %}
+               整改
+            {% endif %}
+
+
+        </th>
+        <th>{{ article.project_name }}</th>
+        <th>{{ article.fiber_type }}</th>
+        <th>{{ article.fiber_length }}米</th>
+    </tr>
+
+{% endfor %}
+</table>
+
     
     
 </ul>
