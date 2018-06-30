@@ -15,7 +15,6 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -70,18 +69,18 @@ class Article(db.Model):
 def login():
     form = LoginForm()
     if request.method == 'POST':
-
         username = request.form.get('username')
         password = request.form.get('password')
         if form.validate_on_submit():
             user = User.query.filter_by(name=username).first()
-
-            if user.password == password:
-                login_user(user)
-                print(current_user.name)
-                return redirect('/newarti')
-            else:
+            if user is None:
                 flash('用户名或密码不正确')
+            else:
+                if user.password == password:
+                    login_user(user)
+                    return redirect('/newarti')
+                else:
+                    flash('用户名或密码不正确')
     return render_template("login.html", form=form)
 
 

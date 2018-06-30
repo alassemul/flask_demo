@@ -1,73 +1,153 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<form method="post">
-    {{ form.csrf_token() }}
-   hello!!  {{ current_user.name }}<br>
+{% extends "bootstrap/base.html" %} <!-- base.html模板继承自bootstrap/base.html -->
+{% block title %}主页{% endblock %}
+{% block navbar %}
+<div class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-taget=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <sapn class="icon-bar"></sapn>
+            <span class="icon-bar"></span><span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">{{ current_user.name }}</a>
+        </div>
+        <div class="navbar=collapse collapse">
+            <ul class="nav navbar-nav">
+            <li>
+                <a href="/">Home</a>
+            </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
-<hr>
-<ul>
+{% block content %}
+    <div class="col-md-5">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">新建事项</h3>
+            </div>
+            <div class="panel-body">
+                <form method="post">
+                    {{ form.csrf_token() }}
 
-    {{ form.create_time.label }}:{{ form.create_time }}<br><br>
-    {{ form.project_type.label }}:{{ form.project_type }}<br><br>
-    {{ form.project_name.label }}:{{ form.project_name }}<br><br>
-    {{ form.reason.label }}:{{ form.reason }}<br><br>
-    {{ form.fiber_type.label }}:{{ form.fiber_type }}  {{ form.fiber_length.label }}:{{ form.fiber_length }}<br><br>
-    {{ form.closure_type.label }}:{{ form.closure_type }}  {{ form.closure_number.label }}:{{ form.closure_number }}<br><br>
-    {{ form.recycle_fiber_type.label }}:{{ form.recycle_fiber_type }}<br><br>
-    {{ form.recycle_fiber_length.label }}:{{ form.recycle_fiber_length }}<br><br>
-    {{ form.other_things.label }}:{{ form.other_things }}<br><br>
-    {{ form.submit}}<br>
+                    <div class="form-inline">
+                        <div class="form-group">
+                            {{ form.create_time.label }}
+                            {{ form.create_time(class="form-control") }}
+                        </div>
 
-</ul>
+                        <div class="form-group">
+                           {{ form.project_type.label }}
+                            {{ form.project_type(class="form-control") }}
+                        </div>
+                    </div>
 
-{% for message in get_flashed_messages() %}
-    {{ message }}
-{% endfor %}
+                    <div class="form-group">
+                       {{ form.project_name.label }}
+                        {{ form.project_name(class="form-control") }}
+                    </div>
+                    <div class="form-group">
+                       {{ form.reason.label }}
+                        {{ form.reason (class="form-control")}}
+                    </div>
+                    <div class="form-inline">
+                        <div class="form-group">
+                           {{ form.fiber_type.label }}
+                            {{ form.fiber_type(class="form-control") }}
+                        </div>
+                        <div class="form-group">
+                           {{ form.fiber_length.label }}
+                            {{ form.fiber_length(class="form-control") }}
+                        </div>
+                    </div>
+                    <div class="form-inline">
+                        <div class="form-group">
+                         {{ form.closure_type.label }}
+                            {{ form.closure_type(class="form-control") }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.closure_number.label }}
+                            {{ form.closure_number(class="form-control") }}
+                        </div>
+                    </div>
+                    <div class="form-inline">
+                        <div class="form-group">
+                            {{ form.recycle_fiber_type.label }}
+                            {{ form.recycle_fiber_type(class="form-control") }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.recycle_fiber_length.label }}
+                            {{ form.recycle_fiber_length(class="form-control")}}
+                        </div>
 
-    <hr>
-<ul>
-已提交工单:<br>
-<table border="0">
-<tr>
-    <th>时间</th>
-    <th>分类</th>
-    <th>项目名称</th>
-    <th>使用光缆类型</th>
-    <th>使用光缆长度</th>
-</tr>
-{% for article in articles %}
-    <tr>
-        <th>{{ article.create_time }}</th>
-        <th>
-            {% if article.project_type=='0' %}
-               抢修
-            {% endif %}
-            {% if article.project_type=='1'%}
-               迁改
-            {% endif %}
-             {% if article.project_type=='2' %}
-               整改
-            {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                       {{ form.other_things.label }}
+                        {{ form.other_things(class="form-control") }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.submit(class="btn btn-primary")}}
+                    </div>
 
 
-        </th>
-        <th>{{ article.project_name }}</th>
-        <th>{{ article.fiber_type }}</th>
-        <th>{{ article.fiber_length }}米</th>
-    </tr>
+                {% for message in get_flashed_messages() %}
+                    {{ message }}
+                {% endfor %}
+                </form>
+            </div>
+        </div>
+    </div>
 
-{% endfor %}
-</table>
+    <div class="col-md-7">
 
-    
-    
-</ul>
+     <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">已提交工单</h3>
+            </div>
+            <div class="panel-body">
 
-</form>
-</body>
-</html>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>时间</th>
+                                <th>分类</th>
+                                <th>项目名称</th>
+                                <th>使用光缆类型</th>
+                                <th>使用光缆长度</th>
+                            </tr>
+                        </thead>
+                    {% for article in articles %}
+                        <thead>
+                            <tr>
+                                <th>{{ article.create_time }}</th>
+                                <th>
+                                    {% if article.project_type=='0' %}
+                                       抢修
+                                    {% endif %}
+                                    {% if article.project_type=='1'%}
+                                       迁改
+                                    {% endif %}
+                                     {% if article.project_type=='2' %}
+                                       整改
+                                    {% endif %}
+                                </th>
+                                <th>{{ article.project_name }}</th>
+                                <th>{{ article.fiber_type }}</th>
+                                <th>{{ article.fiber_length }}米</th>
+                            </tr>
+                        </thead>
+                    {% endfor %}
+
+                    </table>>
+            </div>
+
+
+     </div>
+    </div>
+
+{% endblock %}
+

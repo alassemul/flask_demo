@@ -1,21 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<form method="post">
-    {{ form.csrf_token() }}
-    {{ form.username.label }}{{ form.username }} <br>
-    {{ form.password.label }}{{ form.password }}<br>
-    {{ form.submit}}<br>
-{% for message in get_flashed_messages() %}
-    {{ message }}
-{% endfor %}<br>
-<a href="http://127.0.0.1:5000/reg" >注册</a>
+{% extends "bootstrap/base.html" %} <!-- base.html模板继承自bootstrap/base.html -->
+{% block title %}登陆{% endblock %}
+{% block content %}
 
+    <div class="container" >
+        <div class="col-lg-4 col-lg-offset-4" >
+                <form method="post">
+                <h2>登陆</h2>
+                {{ form.csrf_token() }}
+                    <div class="form-group">
+                        {{ form.username.label }}
+                        {{ form.username(class="form-control") }}
+                   </div>
+                    <div class="form-group">
+                        {{ form.password.label }}
+                        {{ form.password(class="form-control") }}
+                    </div>
+                    <div class="form-group">
+                       {{ form.submit(class="btn btn-primary btn-block")}}
+                    </div>
 
-</form>
-</body>
+                    <div class="form-group">
+                        <button class="btn  btn-block">
+                            <a href="/reg">注册</a>
+                        </button>
+                    </div>
+                    <div class="form-group alert-warning" >
+                    {% for message in get_flashed_messages() %}
+                        {{ message }}
+                    {% endfor %}<br>
+                    </div>
+                </form>
+
+        </div>
+    </div>
+
+{% endblock %}
 </html>
