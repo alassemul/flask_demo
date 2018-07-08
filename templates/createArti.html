@@ -10,8 +10,9 @@
             <sapn class="icon-bar"></sapn>
             <span class="icon-bar"></span><span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">{{ current_user.name }}</a>
+            <a class="navbar-brand" href="/newarti">{{ current_user.name }}</a>
         </div>
+        <!--
         <div class="navbar=collapse collapse">
             <ul class="nav navbar-nav">
             <li>
@@ -19,6 +20,7 @@
             </li>
             </ul>
         </div>
+        -->
     </div>
 </div>
 {% endblock %}
@@ -34,10 +36,11 @@
                     {{ form.csrf_token() }}
 
                     <div class="form-inline">
-                        <div class="form-group">
+                        <div class="form-group ">
                             {{ form.create_time.label }}
-                            {{ form.create_time(class="form-control") }}
+                            {{ form.create_time(class="form-control",value='2018-07-07') }}
                         </div>
+
 
                         <div class="form-group">
                            {{ form.project_type.label }}
@@ -123,6 +126,7 @@
                     {% for article in articles %}
                         <thead>
                             <tr>
+
                                 <th>{{ article.create_time }}</th>
                                 <th>
                                     {% if article.project_type=='0' %}
@@ -138,6 +142,10 @@
                                 <th>{{ article.project_name }}</th>
                                 <th>{{ article.fiber_type }}</th>
                                 <th>{{ article.fiber_length }}米</th>
+                                <th><button class="btn">
+                                    <a href="{{ url_for("delete",article_id=article.id) }}">删除</a>
+                                    </button>
+                                </th>
                             </tr>
                         </thead>
                     {% endfor %}

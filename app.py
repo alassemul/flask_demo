@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect
+from flask import Flask, render_template, request, flash, redirect,url_for
 from form import RegForm, LoginForm, ArticleForm
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, logout_user, current_user, login_required
@@ -133,9 +133,21 @@ def newarti():
     return render_template("createArti.html", form=form, articles=articles)
 
 
-@app.route('/base', methods=['GET', 'POST'])
-def base():
-    return render_template("base.html")
+@app.route('/delete/<article_id>', methods=['GET', 'POST'])
+def delete(article_id):
+    ar = Article.query.get(article_id)
+    if ar:
+        try:
+            db.session.delete(ar)
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            flash('删除失败')
+            db.session.rollback()
+    else:
+        flash('无此纪录')
+
+    return redirect(url_for('newarti'))
 
 
 if __name__ == '__main__':
